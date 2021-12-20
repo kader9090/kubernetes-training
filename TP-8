@@ -1,0 +1,66 @@
+vi ns-production.yml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production 
+
+kubectl apply -f ns-production.yml
+
+
+vi pod-red.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: production
+  name: pod-red
+  labels:
+    app: web
+spec:
+  containers:
+  - name: wpod-red
+    image: kodekloud/webapp-color
+    ports:
+    - containerPort: 8080
+    env:
+    - name: "APP_COLOR"
+      value: "red"
+
+vi pod-red.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: production
+  name: pod-blue
+  labels:
+    app: web
+spec:
+  containers:
+  - name: wpod-blue
+    image: kodekloud/webapp-color
+    ports:
+    - containerPort: 8080
+    env:
+    - name: "APP_COLOR"
+      value: "blue"
+
+
+kubectl get po -n production
+
+
+vi service-nodeport-web.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-nodeport-web
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 8080
+      port: 8080
+      nodePort: 30008
+  selector:
+    app: web
+
